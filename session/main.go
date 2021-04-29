@@ -16,7 +16,7 @@ func main() {
 	router.Use(cotton.Logger())
 
 	// use memory session
-	g := router.Group("/session")
+	g := router.Group("/memory")
 	mgrMemory := session.NewMemoryMgr()
 	g.Use(session.Middleware(mgrMemory))
 
@@ -28,7 +28,7 @@ func main() {
 	g.Get("/get", func(ctx *cotton.Context) {
 		v, e := session.GetSession(ctx).Get("user")
 		if e == nil {
-			ctx.String(http.StatusOK, v.(string))
+			ctx.String(http.StatusOK, fmt.Sprintf("memory user = %s", v))
 		} else {
 			ctx.String(http.StatusOK, "not found")
 		}
@@ -52,12 +52,38 @@ func main() {
 	gRedis.Get("/get", func(ctx *cotton.Context) {
 		v, e := session.GetSession(ctx).Get("user")
 		if e == nil {
-			ctx.String(http.StatusOK, v.(string))
+			ctx.String(http.StatusOK, fmt.Sprintf("redis user = %s", v))
+		} else {
+			ctx.String(http.StatusOK, "not found session")
+		}
+	})
+	gRedis.Get("/delete", func(ctx *cotton.Context) {
+		ss := session.GetSession(ctx)
+		ss.Del("user")
+		ss.Save()
+
+		ctx.String(http.StatusOK, "delete")
+	})
+
+	// use memcache session
+	mgrMemcache := session.NewMemcacheMgr("localhost:11211")
+	gMemcache := router.Group("/memcache")
+	gMemcache.Use(session.Middleware(mgrMemcache))
+	gMemcache.Post("/set", func(ctx *cotton.Context) {
+		ss := session.GetSession(ctx)
+		ss.Set("user", ctx.GetPostForm("user"))
+		ss.Save()
+		ctx.String(http.StatusOK, "writed")
+	})
+	gMemcache.Get("/get", func(ctx *cotton.Context) {
+		v, e := session.GetSession(ctx).Get("user")
+		if e == nil {
+			ctx.String(http.StatusOK, fmt.Sprintf("memcache user = %s", v))
 		} else {
 			ctx.String(http.StatusOK, "not found")
 		}
 	})
-	gRedis.Get("/delete", func(ctx *cotton.Context) {
+	gMemcache.Get("/delete", func(ctx *cotton.Context) {
 		ss := session.GetSession(ctx)
 		ss.Del("user")
 		ss.Save()
