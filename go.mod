@@ -7,6 +7,7 @@ require (
 	github.com/tonny-zhang/cotton-session v0.0.0-00010101000000-000000000000
 )
 
+// config for local
 replace (
 	github.com/tonny-zhang/cotton => ../cotton
 	github.com/tonny-zhang/cotton-session => ../cotton-session
