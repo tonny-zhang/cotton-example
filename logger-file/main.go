@@ -36,7 +36,14 @@ func (writer *timeWriter) Write(p []byte) (n int, err error) {
 		}
 	}
 
-	return writer.file.Write(p)
+	// NOTICE: write after file removed gives error
+	// https://stackoverflow.com/questions/34325128/write-to-non-existing-file-gives-no-error/34325329
+	n, err = writer.file.Write(p)
+
+	if err != nil {
+		fmt.Println(err)
+	}
+	return
 }
 func main() {
 	_, filename, _, ok := runtime.Caller(0)
