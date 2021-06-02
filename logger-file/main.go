@@ -47,6 +47,7 @@ func main() {
 	writer := &timeWriter{
 		filepathFormat: path.Join(logDir, "access.200601021504.log"),
 	}
+
 	writerError := &timeWriter{
 		filepathFormat: path.Join(logDir, "error.200601021504.log"),
 	}
@@ -60,6 +61,16 @@ func main() {
 	})
 	router.Get("/panic", func(ctx *cotton.Context) {
 		panic("123")
+	})
+
+	d1 := router.Domain("a.pilin.com")
+	d1.Use(cotton.LoggerWidthConf(cotton.LoggerConf{
+		Writer: &timeWriter{
+			filepathFormat: path.Join(logDir, "a.pilin.com-200601021504.log"),
+		},
+	}))
+	d1.Get("/test", func(ctx *cotton.Context) {
+		ctx.String(http.StatusOK, "d1 test")
 	})
 
 	router.Run("")
