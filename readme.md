@@ -18,6 +18,7 @@ example for [cotton](https://github.com/tonny-zhang/cotton)
 * [custom-notfound](./custom-notfound/main.go)
 * [redirect](./redirect/main.go)
 * [domain](./domain/main.go)
+* [custom-logger-file](./logger-file/main.go)
 ## middleware
 * [example for session (memory, redis, memcache)](./middleware-requestsign/main.go)
 * [example for post request data sign](./middleware-requestsign/main.go)
