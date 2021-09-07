@@ -56,11 +56,6 @@ func main() {
 			}
 		}
 	})
-	// cotton auto deal
-	r.Post("/json2", func(ctx *cotton.Context) {
-		name := ctx.GetPostForm("name")
-		ctx.String(http.StatusOK, "name = "+name)
-	})
 
 	r.Run("")
 }
